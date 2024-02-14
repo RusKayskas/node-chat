@@ -1,2 +1,6 @@
 # node-chat
-socket cjat learning
+socket chat 
+
+# server
+yarn run dev
+

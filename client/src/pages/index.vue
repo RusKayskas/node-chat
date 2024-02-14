@@ -29,8 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, onMounted, onBeforeUnmount, reactive } from 'vue';
-  import { io, type Socket } from 'socket.io-client';
+  import { reactive } from 'vue';
   import { useRouter } from 'vue-router';
   const router = useRouter();
   const rooms = ['vue', 'nuxt', 'socket', 'pinia'];
@@ -45,15 +44,5 @@
     router.push(`/chat?username=${state.username}&room=${state.room}`);
   };
 
-  const socket = ref<Socket>();
-
-  onMounted(() => {
-    socket.value = io('http://localhost:3001');
-  });
-
-  onBeforeUnmount(() => {
-    console.log('[DISCONECT_BLOCK]');
-    console.log('socket.value', socket.value);
-    socket.value?.disconnect();
-  });
+  
 </script>

@@ -2,6 +2,7 @@ import express from 'express';
 import { Server } from 'socket.io';
 import { createServer } from 'http';
 import cors from 'cors';
+import { userJoin, formatMessage, botMessage, getRoomUsers, userLeave } from './utils.js';
 
 const app = express();
 const server = createServer(app);
@@ -13,8 +14,24 @@ const io = new Server(server, {
   }
 });
 
-io.on('connection', (socket) => {
-  console.log('ws connected', socket.id);
+io.on("connection", (socket) => {
+  socket.on("joinRoom", (payload) => {
+    const user = userJoin({ ...payload, id: socket.id });
+    socket.join(user.room);
+    console.log("IN Join room eveent");
+    socket.broadcast
+      .to(user.room)
+      .emit(
+        "message",
+        formatMessage(botMessage, `${user.username} has joined the chat`)
+      );
+
+    io.to(user.room).emit('roomUsers', {
+      room: user.room,
+      users: getRoomUsers(user.room)
+    });
+  });
+  
 });
 
 
